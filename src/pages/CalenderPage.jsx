@@ -141,7 +141,7 @@ const CalendarPage = () => {
               selectable
               onSelectSlot={handleSelectSlot}
               style={{ height: 500 }}
-              views={['month', 'day', 'agenda']}
+              views={['month', 'day']}
               defaultView="month"
               eventPropGetter={(event) => ({
                 style: {
