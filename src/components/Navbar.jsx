@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom"; // If using React Router for navigation
-import profile from "../assets/images/sample.jpg";
+import UserProfile from "./UserProfile"; // Import UserProfile component
 
 const Navbar = () => {
   return (
@@ -55,20 +55,7 @@ const Navbar = () => {
         </div>
 
         {/* User Profile Section */}
-        <div className="flex items-center space-x-4">
-          {/* Profile Icon */}
-          <div className="relative group">
-            {/* Rotating Gradient Ring */}
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-green-400 via-lime-400 to-green-600 opacity-90 animate-spin-slow group-hover:animate-spin-fast transition-all duration-300"></div>
-            {/* Glow Effect */}
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-green-300 to-transparent blur-md opacity-70 group-hover:opacity-100 transition duration-300"></div>
-            <img
-              src={profile}
-              alt="Profile"
-              className="relative h-14 w-14 rounded-full border-2 border-white shadow-lg cursor-pointer"
-            />
-          </div>
-        </div>
+        <UserProfile />
       </div>
     </nav>
   );
