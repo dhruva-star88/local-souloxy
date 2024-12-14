@@ -10,6 +10,7 @@ import Appointments from './pages/Appointments'
 import MessageArea from './pages/MessageArea'
 import LearningHub from './pages/LearningHub'
 import CalenderPage from './pages/CalenderPage'
+import EditProfile from './pages/EditProfile'
 import './index.css';
 
 
@@ -22,6 +23,7 @@ const App = () => {
         <Route path ='/message-area' element = {<MessageArea />}/>
         <Route path ='/learning-hub' element = {<LearningHub />}/>
         <Route path ='/calendar' element = {<CalenderPage />}/>
+        <Route path ='/edit-profile' element = {<EditProfile />}/>
         <Route path ='*' element = {<NotFoundPage />}/>
       </Route>
     )

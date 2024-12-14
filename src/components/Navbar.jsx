@@ -4,7 +4,7 @@ import UserProfile from "./UserProfile"; // Import UserProfile component
 
 const Navbar = () => {
   return (
-    <nav className="bg-gradient-to-r from-lime-200 via-green-200 to-lime-200 text-gray-800 shadow-lg sticky top-0 z-50">
+    <nav className="bg-green-200 text-gray-800 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto py-4 px-4 flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center space-x-4">
