@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaPaperclip, FaRegPaperPlane } from "react-icons/fa";
-import MessageNavbar from "./MessageNavbar";
+import MessageNavbar from "../components/MessageNavbar";
 
 const MessageArea = () => {
   const [selectedContact, setSelectedContact] = useState(null);
