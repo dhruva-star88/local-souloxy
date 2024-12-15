@@ -3,7 +3,6 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay, isBefore, startOfDay, differenceInMinutes } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import UpComingAppointments from '../components/UpComingAppoitments';
 import EditingSlots from '../components/EditingSlots';
@@ -19,63 +18,29 @@ const localizer = dateFnsLocalizer({
 const CalendarPage = () => {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [holidays, setHolidays] = useState([]);
-  const [currentMonthHolidays, setCurrentMonthHolidays] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [slotDetails, setSlotDetails] = useState({ start: '', end: '' });
-
-  useEffect(() => {
-    const fetchHolidays = async () => {
-      try {
-        const response = await axios.get('https://calendarific.com/api/v2/holidays', {
-          params: {
-            api_key: 'C2rzgHeUx8NcZnIzGMis2hDVuXXeYcYD',
-            country: 'IN',
-            year: new Date().getFullYear(),
-          },
-        });
-        setHolidays(response.data.response.holidays);
-      } catch (error) {
-        console.error('Error fetching holidays:', error);
-      }
-    };
-    fetchHolidays();
-  }, []);
-
-  useEffect(() => {
-    if (holidays.length > 0) {
-      const filteredHolidays = holidays.filter((holiday) => {
-        const holidayMonth = new Date(holiday.date.iso).getMonth();
-        return holidayMonth === currentMonth;
-      });
-      setCurrentMonthHolidays(filteredHolidays);
-    }
-  }, [holidays, currentMonth]);
+  const [hoveredDate, setHoveredDate] = useState(null);
 
   const handleNavigate = (date) => {
     setCurrentMonth(date.getMonth());
   };
 
   const handleSelectSlot = (slotInfo) => {
-    console.log(slotInfo); // Debugging if the function is triggered
-
     const now = new Date();
-    const currentDate = startOfDay(now); // Reset to start of today
-
-    const selectedDate = startOfDay(slotInfo.start); // Start of the selected slot date
+    const currentDate = startOfDay(now);
+    const selectedDate = startOfDay(slotInfo.start);
 
     if (isBefore(selectedDate, currentDate)) {
       alert('You cannot select slots from previous days.');
       return;
     }
 
-    // Get the current time rounded to nearest 30 minutes
     const currentHour = now.getHours();
     const currentMinute = Math.floor(now.getMinutes() / 30) * 30;
     const startTime = new Date(selectedDate);
     startTime.setHours(currentHour, currentMinute, 0, 0);
 
-    // Default end time to 30 minutes after start time
     const endTime = new Date(startTime);
     endTime.setMinutes(startTime.getMinutes() + 30);
 
@@ -86,63 +51,16 @@ const CalendarPage = () => {
     });
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSlotDetails((prev) => ({ ...prev, [name]: new Date(value) }));
+  const handleMouseEnter = (date) => {
+    setHoveredDate(date);
   };
 
-  const saveSlot = () => {
-    if (slotDetails.start >= slotDetails.end) {
-      alert('End time must be after start time.');
-      return;
-    }
-
-    const isDuplicate = availableSlots.some(
-      (slot) =>
-        slot.start.getTime() === slotDetails.start.getTime() &&
-        slot.end.getTime() === slotDetails.end.getTime()
-    );
-
-    if (isDuplicate) {
-      alert('This slot has already been selected. Please choose a different slot.');
-      return;
-    }
-
-    const newSlot = {
-      title: 'Available Slot',
-      start: slotDetails.start,
-      end: slotDetails.end,
-    };
-
-    setAvailableSlots((prevSlots) => [...prevSlots, newSlot]);
-    setSelectedSlot(null);
-    toast.success('Slot Added Successfully');
+  const handleMouseLeave = () => {
+    setHoveredDate(null);
   };
 
-  const deleteSlot = (index) => {
-    const isConfirmed = window.confirm('Are you sure you want to delete this slot?');
-    if (isConfirmed) {
-      setAvailableSlots((prevSlots) => prevSlots.filter((_, i) => i !== index));
-    }
-    toast.success('Slot Deleted Successfully');
-  };
-
-  const clearSlots = () => {
-    const isConfirmed = window.confirm('Are you sure you want to clear all slots?');
-    if (isConfirmed) {
-      setAvailableSlots([]);
-    }
-    toast.success('All Slots Cleared Successfully');
-  };
-
-  const calculateDuration = (start, end) => {
-    const duration = differenceInMinutes(end, start);
-    return `${duration} mins`;
-  };
-
-  const isHoliday = (date) => {
-    const holidayDate = date.toISOString().split('T')[0];
-    return holidays.some((holiday) => holiday.date.iso === holidayDate);
+  const isDateSelected = (date) => {
+    return selectedSlot && startOfDay(selectedSlot.start).getTime() === startOfDay(date).getTime();
   };
 
   return (
@@ -156,42 +74,54 @@ const CalendarPage = () => {
             startAccessor="start"
             endAccessor="end"
             selectable
-            onSelectSlot={handleSelectSlot} // Ensure this handler is attached
+            onSelectSlot={handleSelectSlot}
             style={{ height: 500 }}
-            views={['month', 'day']}
+            views={['month']}
             defaultView="month"
-            eventPropGetter={(event) => ({
-              style: {
-                backgroundColor: '#34d399',
-                color: 'white',
-                borderRadius: '4px',
-              },
-            })}
-            dayPropGetter={(date) => {
-              if (isHoliday(date)) {
-                return { className: 'bg-[#FFCCCB] relative' };
-              }
-              return {};
-            }}
             onNavigate={handleNavigate}
+            dayPropGetter={(date) => {
+              const isSelected = isDateSelected(date);
+              const isHovered = hoveredDate && startOfDay(hoveredDate).getTime() === startOfDay(date).getTime();
+
+              return {
+                className: isSelected
+                  ? 'bg-[#c3e6cb] cursor-pointer'
+                  : isHovered
+                  ? 'hover:bg-[#e0f2f1] cursor-pointer'
+                  : 'cursor-pointer',
+                onMouseEnter: () => handleMouseEnter(date),
+                onMouseLeave: handleMouseLeave,
+              };
+            }}
           />
-          <button
-            onClick={clearSlots}
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-all"
-          >
-            Clear All Slots
-          </button>
         </div>
 
         <EditingSlots
           slotDetails={slotDetails}
-          handleInputChange={handleInputChange}
-          saveSlot={saveSlot}
+          handleInputChange={(e) => {
+            const { name, value } = e.target;
+            setSlotDetails((prev) => ({ ...prev, [name]: new Date(value) }));
+          }}
+          saveSlot={() => {
+            if (slotDetails.start >= slotDetails.end) {
+              alert('End time must be after start time.');
+              return;
+            }
+            setAvailableSlots((prevSlots) => [...prevSlots, { ...slotDetails, title: 'Available Slot' }]);
+            setSelectedSlot(null);
+            toast.success('Slot Added Successfully');
+          }}
           availableSlots={availableSlots}
-          deleteSlot={deleteSlot}
-          calculateDuration={calculateDuration}
+          deleteSlot={(index) => {
+            if (window.confirm('Are you sure you want to delete this slot?')) {
+              setAvailableSlots((prevSlots) => prevSlots.filter((_, i) => i !== index));
+              toast.success('Slot Deleted Successfully');
+            }
+          }}
+          calculateDuration={(start, end) => `${differenceInMinutes(end, start)} mins`}
         />
       </div>
+
       <div className="p-6">
         <div className="w-full p-4 border rounded-lg shadow-lg bg-gradient-to-r from-green-100 via-green-200 to-green-300">
           <h3 className="font-semibold text-green-800 mb-4">Upcoming Bookings</h3>
