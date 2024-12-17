@@ -63,6 +63,24 @@ const CalendarPage = () => {
     return selectedSlot && startOfDay(selectedSlot.start).getTime() === startOfDay(date).getTime();
   };
 
+  const handleSaveSlot = () => {
+    if (slotDetails.start >= slotDetails.end) {
+      alert('End time must be after start time.');
+      return;
+    }
+    setAvailableSlots((prevSlots) => [...prevSlots, { ...slotDetails, title: 'Available Slot' }]);
+    setSelectedSlot(null);
+    toast.success('Slot Added Successfully');
+  };
+
+  const handleDeleteSlot = (index) => {
+    if (window.confirm('Are you sure you want to delete this slot?')) {
+      const updatedSlots = availableSlots.filter((_, i) => i !== index); 
+      setAvailableSlots(updatedSlots);
+      toast.success('Slot Deleted Successfully');
+    }
+  };
+
   return (
     <>
       <div className="flex p-6 space-x-6">
@@ -102,23 +120,11 @@ const CalendarPage = () => {
             const { name, value } = e.target;
             setSlotDetails((prev) => ({ ...prev, [name]: new Date(value) }));
           }}
-          saveSlot={() => {
-            if (slotDetails.start >= slotDetails.end) {
-              alert('End time must be after start time.');
-              return;
-            }
-            setAvailableSlots((prevSlots) => [...prevSlots, { ...slotDetails, title: 'Available Slot' }]);
-            setSelectedSlot(null);
-            toast.success('Slot Added Successfully');
-          }}
+          saveSlot={handleSaveSlot}
           availableSlots={availableSlots}
-          deleteSlot={(index) => {
-            if (window.confirm('Are you sure you want to delete this slot?')) {
-              setAvailableSlots((prevSlots) => prevSlots.filter((_, i) => i !== index));
-              toast.success('Slot Deleted Successfully');
-            }
-          }}
+          deleteSlot={handleDeleteSlot}
           calculateDuration={(start, end) => `${differenceInMinutes(end, start)} mins`}
+          updateCalendar={(updatedSlots) => setAvailableSlots(updatedSlots)}  // Updated the function here to update available slots
         />
       </div>
 

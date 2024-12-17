@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { format, addMinutes, isBefore, endOfDay, set, startOfDay, isToday } from 'date-fns'; // A
+import { format, addMinutes, isBefore, endOfDay, set, startOfDay, isToday } from 'date-fns';
 import DisplaySlots from './DisplaySlots';
 
-const EditingSlots = ({ slotDetails, saveSlot, availableSlots, deleteSlot, calculateDuration }) => {
+const EditingSlots = ({ slotDetails, saveSlot, deleteSlot, calculateDuration, updateCalendar }) => {
   const [minuteSwitch, setMinuteSwitch] = useState(0);
   const [batchDuration, setBatchDuration] = useState(30);
   const [timeSlots, setTimeSlots] = useState([]);
+  const [selectedSlots, setSelectedSlots] = useState([]);
 
-  // Generate time slots based on the current time and batch duration
   useEffect(() => {
     generateTimeSlots();
-  }, [minuteSwitch, batchDuration, slotDetails.start]);
+  }, [minuteSwitch, batchDuration, slotDetails.start, selectedSlots]);
 
   const handleMinuteSwitchChange = (e) => {
     setMinuteSwitch(parseInt(e.target.value, 10));
@@ -24,11 +24,9 @@ const EditingSlots = ({ slotDetails, saveSlot, availableSlots, deleteSlot, calcu
     const startTime = slotDetails.start ? new Date(slotDetails.start) : new Date();
     let adjustedStartTime;
 
-    // For current day, start from the current time considering the minute switch
     if (isToday(startTime)) {
       adjustedStartTime = set(startTime, { minutes: minuteSwitch, seconds: 0, milliseconds: 0 });
     } else {
-      // For future days, start from midnight (00:00) but consider the minute switch
       adjustedStartTime = set(startOfDay(startTime), { minutes: minuteSwitch, seconds: 0, milliseconds: 0 });
     }
 
@@ -40,11 +38,18 @@ const EditingSlots = ({ slotDetails, saveSlot, availableSlots, deleteSlot, calcu
     while (isBefore(currentTime, endTimeOfDay)) {
       const endTime = addMinutes(currentTime, batchDuration);
       if (isBefore(endTime, endTimeOfDay) || endTime.getTime() === endTimeOfDay.getTime()) {
-        slots.push({
-          start: new Date(currentTime),
-          end: new Date(endTime),
-          label: `${format(currentTime, 'hh:mm a')} - ${format(endTime, 'hh:mm a')}`,
-        });
+        const isOverlapping = selectedSlots.some(slot =>
+          (currentTime >= slot.start && currentTime < slot.end) ||
+          (endTime > slot.start && endTime <= slot.end)
+        );
+
+        if (!isOverlapping) {
+          slots.push({
+            start: new Date(currentTime),
+            end: new Date(endTime),
+            label: `${format(currentTime, 'hh:mm a')} - ${format(endTime, 'hh:mm a')}`,
+          });
+        }
       }
       currentTime = addMinutes(currentTime, batchDuration);
     }
@@ -53,10 +58,17 @@ const EditingSlots = ({ slotDetails, saveSlot, availableSlots, deleteSlot, calcu
   };
 
   const handleSlotSelection = (slot) => {
-    saveSlot({
-      start: slot.start,
-      end: slot.end,
-    });
+    setSelectedSlots(prevSelected => [...prevSelected, slot]);
+    saveSlot({ start: slot.start, end: slot.end });
+  };
+
+  // Handle deleting a selected slot
+  const handleDeleteSlot = (index) => {
+    const newSelectedSlots = selectedSlots.filter((_, i) => i !== index);
+    setSelectedSlots(newSelectedSlots);
+
+    // Call updateCalendar function to update calendar after deletion
+    updateCalendar(newSelectedSlots);
   };
 
   return (
@@ -100,7 +112,8 @@ const EditingSlots = ({ slotDetails, saveSlot, availableSlots, deleteSlot, calcu
                 <span className="text-gray-700">{slot.label}</span>
                 <button
                   onClick={() => handleSlotSelection(slot)}
-                  className="px-2 py-1 bg-green-400 text-white rounded hover:bg-green-600 transition-all"
+                  className={`px-2 py-1 rounded transition-all ${selectedSlots.some(selected => selected.start.getTime() === slot.start.getTime()) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-400 text-white hover:bg-green-600'}`}
+                  disabled={selectedSlots.some(selected => selected.start.getTime() === slot.start.getTime())}
                 >
                   Select
                 </button>
@@ -113,8 +126,8 @@ const EditingSlots = ({ slotDetails, saveSlot, availableSlots, deleteSlot, calcu
       </div>
 
       <DisplaySlots
-        availableSlots={availableSlots}
-        deleteSlot={deleteSlot}
+        availableSlots={selectedSlots} 
+        deleteSlot={handleDeleteSlot}
         calculateDuration={calculateDuration}
       />
     </div>
