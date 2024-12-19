@@ -7,12 +7,12 @@ import 'react-toastify/dist/ReactToastify.css';
 const MainLayout = () => {
   const location = useLocation();
 
-  // Check if the current path is "messagearea"
+  // Check if the current path is "message-area"
   const isMessageArea = location.pathname.includes('message-area');
 
   return (
     <>
-      {!isMessageArea && <Navbar />} {/* Only show Navbar if not on the MessageArea page */}
+      {!isMessageArea && <Navbar />} {/* Only shows Navbar if not on the MessageArea page */}
       <Outlet />
       <ToastContainer />
     </>

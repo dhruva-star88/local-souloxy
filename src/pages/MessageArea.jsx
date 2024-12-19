@@ -7,7 +7,7 @@ const MessageArea = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState({});
   const [attachment, setAttachment] = useState(null);
-  const [showUnread, setShowUnread] = useState(false); // State to toggle unread messages
+  const [showUnread, setShowUnread] = useState(false); 
 
   const contacts = Array.from({ length: 30 }, (_, i) => ({
     id: i + 1,
@@ -38,7 +38,7 @@ const MessageArea = () => {
 
   // Handle the Enter key press to send a message
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {  // Check if Enter key is pressed without Shift
+    if (e.key === "Enter" && !e.shiftKey) {  
       e.preventDefault();  // Prevent new line insertion
       handleSendMessage(); // Send the message
     }

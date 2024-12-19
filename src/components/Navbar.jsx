@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom"; // If using React Router for navigation
-import UserProfile from "./UserProfile"; // Import UserProfile component
+import { Link } from "react-router-dom";
+import UserProfile from "./UserProfile"; 
 
 const Navbar = () => {
   return (

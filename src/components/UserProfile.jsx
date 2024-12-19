@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom"; // If using React Router for navigation
+import { Link } from "react-router-dom";
 import { FaUserEdit, FaCog, FaCreditCard, FaLifeRing, FaSignOutAlt } from "react-icons/fa"; // FontAwesome Icons
 import profile from "../assets/images/sample.jpg";
 

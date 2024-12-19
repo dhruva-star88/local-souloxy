@@ -1,5 +1,3 @@
-//Dashboard.jsx
-
 import React from 'react';
 import TherapistAbout from '../components/TherapistAbout';
 import UpComingAppointments from '../components/UpComingAppoitments';
