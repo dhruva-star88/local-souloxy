@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { toast } from 'react-toastify';  // Make sure you import toast for showing messages
+import { toast } from 'react-toastify'; 
 
 const DisplaySlots = ({ availableSlots, deleteSlot, calculateDuration }) => {
   const handleDeleteSlot = (index) => {
