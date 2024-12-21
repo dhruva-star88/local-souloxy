@@ -187,7 +187,7 @@ const MessageArea = () => {
                   type="text"
                   value={message}
                   onChange={handleMessageChange}
-                  onKeyDown={handleKeyDown}  // Add the event listener here
+                  onKeyDown={handleKeyDown}  
                   placeholder="Type a message..."
                   className="flex-1 mx-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
