@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { toast } from 'react-toastify'; 
 
 const DisplaySlots = ({ availableSlots, deleteSlot, calculateDuration }) => {
+  console.log(availableSlots)
   const handleDeleteSlot = (index) => {
     if (window.confirm('Are you sure you want to delete this slot?')) {
       // Delete the slot if confirmed
@@ -18,7 +19,9 @@ const DisplaySlots = ({ availableSlots, deleteSlot, calculateDuration }) => {
         className="space-y-2 p-2 bg-gray-50 border rounded-lg shadow-inner"
         style={{ maxHeight: '200px', overflowY: 'auto' }}
       >
+         
         {availableSlots.length > 0 ? (
+         
           <ul className="space-y-2">
             {availableSlots.map((slot, index) => (
               <li

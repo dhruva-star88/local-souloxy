@@ -61,7 +61,6 @@ const EditingSlots = ({ slotDetails, saveSlot, deleteSlot, calculateDuration, up
     setSelectedSlots(prevSelected => [...prevSelected, slot]);
     saveSlot({ start: slot.start, end: slot.end });
   };
-  console.log(slotDetails)
 
   // Handle deleting a selected slot
   const handleDeleteSlot = (index) => {

@@ -19,8 +19,23 @@ const CalendarPage = () => {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [slotDetails, setSlotDetails] = useState({ start: '', end: '' });
+  const [slotDetails, setSlotDetails] = useState({start: '', end: ''});
   const [hoveredDate, setHoveredDate] = useState(null);
+  const[slots, setSlots] = useState([])
+
+  useEffect(() => {
+    const fetchSlots = async() => {
+      try{
+        const res = await fetch("http://localhost:8000/appointments")
+        const data = await res.json();
+        setSlots(data);
+      }
+      catch (error){
+        console.log("Error Fetching data", error)
+      }
+    }
+    fetchSlots()
+  }, [])
 
   const handleNavigate = (date) => {
     setCurrentMonth(date.getMonth());
