@@ -1,53 +1,41 @@
 import React from 'react';
-import { format } from 'date-fns';
-import { toast } from 'react-toastify'; 
 
-const DisplaySlots = ({ availableSlots, deleteSlot, calculateDuration }) => {
-  console.log(availableSlots)
-  const handleDeleteSlot = (index) => {
-    if (window.confirm('Are you sure you want to delete this slot?')) {
-      // Delete the slot if confirmed
-      deleteSlot(index);
-      toast.success('Slot deleted successfully!');
-    }
-  };
+const calculateDuration = (start, end) => {
+  // Calculate duration in minutes
+  const startTime = new Date(start);
+  const endTime = new Date(end);
+  const durationInMs = endTime - startTime;
+  return durationInMs / 60000; // Convert from milliseconds to minutes
+};
 
+
+const DisplaySlots = ({ availableSlots, deleteSlot }) => {
   return (
-    <div className="mt-8">
-      <h3 className="font-semibold text-green-800 mb-4">Your Selected Availability</h3>
-      <div
-        className="space-y-2 p-2 bg-gray-50 border rounded-lg shadow-inner"
-        style={{ maxHeight: '200px', overflowY: 'auto' }}
-      >
-         
-        {availableSlots.length > 0 ? (
-         
-          <ul className="space-y-2">
-            {availableSlots.map((slot, index) => (
-              <li
-                key={index}
-                className="p-2 bg-gray-100 rounded-lg shadow-md flex justify-between"
+    <div>
+      <h3 className="text-lg font-bold text-green-800">Existing Slots</h3>
+      <ul className="max-h-48 overflow-y-auto border p-2 rounded-lg ">
+        {availableSlots.map((slot, index) => {
+          const duration = calculateDuration(slot.start, slot.end);
+          return (
+            <li key={index} className="flex justify-between items-center mt-2">
+              <div>
+                <span className="font-medium text-gray-700">
+                  
+                  {`${slot.start.toISOString().split("T")[0]} - ${slot.start.toLocaleTimeString()} to ${slot.end.toLocaleTimeString()}`}
+    
+                </span>
+                <span className="ml-2 text-gray-500">({duration} mins)</span>
+              </div>
+              <button
+                onClick={() => deleteSlot(index)}
+                className="px-2 py-1 bg-red-400 text-white rounded hover:bg-red-600"
               >
-                <div>
-                  {format(slot.start, 'yyyy-MM-dd')} - {format(slot.start, 'hh:mm a')} to{' '}
-                  {format(slot.end, 'hh:mm a')}
-                  <span className="ml-2 text-sm text-gray-600">
-                    ({calculateDuration(slot.start, slot.end)} minutes)
-                  </span>
-                </div>
-                <button
-                  onClick={() => handleDeleteSlot(index)} 
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No slots available.</p>
-        )}
-      </div>
+                Delete
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };

@@ -29,6 +29,7 @@ const CalendarPage = () => {
         const res = await fetch("http://localhost:8000/appointments")
         const data = await res.json();
         setSlots(data);
+        console.log("Data fetched successfully:", data); 
       }
       catch (error){
         console.log("Error Fetching data", error)
@@ -42,9 +43,16 @@ const CalendarPage = () => {
   };
 
   const handleSelectSlot = (slotInfo) => {
+    //This is an object that contains information about the slot being selected
+    console.log("Slot Info ",slotInfo) 
+    //creates a new Date object representing the current date and time - Mon Dec 23 2024 00:53:08 GMT+0530 
     const now = new Date();
+    //normalizes the current date to the start of the day- Mon Dec 23 2024 00:00:00 GMT+0530 
     const currentDate = startOfDay(now);
+    console.log("currentDate",currentDate)
+    //normalizes the selected slot's start time to the start of that day.
     const selectedDate = startOfDay(slotInfo.start);
+    console.log("SelectedDate",selectedDate)
 
     if (isBefore(selectedDate, currentDate)) {
       alert('You cannot select slots from previous days.');
@@ -58,13 +66,20 @@ const CalendarPage = () => {
 
     const endTime = new Date(startTime);
     endTime.setMinutes(startTime.getMinutes() + 30);
+    console.log("Slot Info Received:", slotInfo);
+    console.log("Start Time from Slot Info:", slotInfo.start);
+    console.log("End Time from Slot Info:", slotInfo.end);
 
     setSelectedSlot(slotInfo);
     setSlotDetails({
       start: startTime,
       end: endTime,
+     
     });
+    console.log("Slot Details:",slotDetails)
+    console.log("Selected Slot",selectedSlot)
   };
+  
 
   const handleMouseEnter = (date) => {
     setHoveredDate(date);
@@ -73,6 +88,7 @@ const CalendarPage = () => {
   const handleMouseLeave = () => {
     setHoveredDate(null);
   };
+
 
   const isDateSelected = (date) => {
     return selectedSlot && startOfDay(selectedSlot.start).getTime() === startOfDay(date).getTime();
@@ -83,7 +99,9 @@ const CalendarPage = () => {
       alert('End time must be after start time.');
       return;
     }
+    //Appending the slot info to Available slots state
     setAvailableSlots((prevSlots) => [...prevSlots, { ...slotDetails, title: 'Available Slot' }]);
+    console.log("Available slots", availableSlots)
     setSelectedSlot(null);
     toast.success('Slot Added Successfully');
   };
@@ -109,7 +127,7 @@ const CalendarPage = () => {
             selectable
             onSelectSlot={handleSelectSlot}
             style={{ height: 500 }}
-            views={['month']}
+            views={['month', 'agenda', 'work_week']}
             defaultView="month"
             onNavigate={handleNavigate}
             dayPropGetter={(date) => {

@@ -9,8 +9,8 @@ import Dashboard from './pages/Dashboard'
 import Appointments from './pages/Appointments'
 import MessageArea from './pages/MessageArea'
 import LearningHub from './pages/LearningHub'
-import CalenderPage from './pages/CalenderPage'
 import EditProfile from './pages/EditProfile'
+import EditCalenderView from './pages/CalenderEditView'
 import './index.css';
 
 
@@ -22,7 +22,7 @@ const App = () => {
         <Route path ='/appointments' element = {<Appointments />}/>
         <Route path ='/message-area' element = {<MessageArea />}/>
         <Route path ='/learning-hub' element = {<LearningHub />}/>
-        <Route path ='/calendar' element = {<CalenderPage />}/>
+        <Route path ='/calendar' element = {<EditCalenderView />}/>
         <Route path ='/edit-profile' element = {<EditProfile />}/>
         <Route path ='*' element = {<NotFoundPage />}/>
       </Route>
