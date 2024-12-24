@@ -10,7 +10,7 @@ import Appointments from './pages/Appointments'
 import MessageArea from './pages/MessageArea'
 import LearningHub from './pages/LearningHub'
 import EditProfile from './pages/EditProfile'
-import EditCalenderView from './pages/CalenderEditView'
+import EditCalenderView from './pages/CalendarEditView'
 import './index.css';
 
 

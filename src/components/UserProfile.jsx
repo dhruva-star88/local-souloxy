@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUserEdit, FaCog, FaCreditCard, FaLifeRing, FaSignOutAlt } from "react-icons/fa"; // FontAwesome Icons
-import profile from "../assets/images/sample.jpg";
+import profile from "../assets/images/avatar.png";
+
 
 const UserProfile = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -27,13 +28,13 @@ const UserProfile = () => {
     <div ref={profileRef} className="relative">
       <div onClick={toggleDropdown} className="cursor-pointer relative group">
         {/* Rotating Gradient Ring */}
-        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-green-400 via-lime-400 to-green-600 opacity-90 animate-spin-slow group-hover:animate-spin-fast transition-all duration-300"></div>
+        <div className="absolute -inset-1 rounded-full border-green-500 shadow-md "></div>
         {/* Glow Effect */}
-        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-green-300 to-transparent blur-md opacity-70 group-hover:opacity-100 transition duration-300"></div>
+        
         <img
           src={profile}
           alt="Profile"
-          className="relative h-14 w-14 rounded-full border-2 border-white shadow-lg"
+          className="relative h-14 w-14 rounded-full border-2 border-green-100 shadow-md"
         />
       </div>
 

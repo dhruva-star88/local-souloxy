@@ -3,6 +3,7 @@ import { format, addMinutes, isBefore, endOfDay, set, startOfDay, isToday, isPas
 import CalendarChild from  '../components/Calender';
 import DisplaySlots from '../components/DisplaySlots';
 import { toast } from 'react-toastify';
+import '../calendar.css'
 
 const EditingSlots = () => {
   const [minuteSwitch, setMinuteSwitch] = useState(0);

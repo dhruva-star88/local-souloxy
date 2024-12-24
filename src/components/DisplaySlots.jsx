@@ -17,7 +17,7 @@ const DisplaySlots = ({ availableSlots, deleteSlot }) => {
         {availableSlots.map((slot, index) => {
           const duration = calculateDuration(slot.start, slot.end);
           return (
-            <li key={index} className="flex justify-between items-center mt-2">
+            <li key={index} className="flex justify-between items-center mb-2">
               <div>
                 <span className="font-medium text-gray-700">
                   

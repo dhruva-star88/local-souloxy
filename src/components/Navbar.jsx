@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import UserProfile from "./UserProfile"; 
+import './navbar.css'
 
 const Navbar = () => {
   return (
-    <nav className="bg-green-200 text-gray-800 shadow-lg sticky top-0 z-50">
+    <nav className="bg-green-200 text-gray-800 shadow-lg sticky top-0 z-50 navBar">
       <div className="max-w-7xl mx-auto py-4 px-4 flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center space-x-4">
@@ -13,7 +14,7 @@ const Navbar = () => {
             alt="Logo"
             className="h-12 w-12 rounded-full border-2 border-green-300 shadow-md"
           />
-          <span className="text-2xl font-bold text-green-800">SOULOXY</span>
+          <span className="text-2xl font-bold text-green-1000">SOULOXY</span>
         </div>
 
         {/* Navigation Links */}
