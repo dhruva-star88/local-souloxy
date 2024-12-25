@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'; 
 import { format, addMinutes, isBefore, endOfDay, set, startOfDay, isToday, isPast } from 'date-fns';
 import CalendarChild from  '../components/Calender';
 import DisplaySlots from '../components/DisplaySlots';
 import { toast } from 'react-toastify';
 import '../calendar.css'
+import { id } from 'date-fns/locale';
 
 const EditingSlots = () => {
+  const { service_provider_id } = useParams(); // To fetch the service provider id from url
   const [minuteSwitch, setMinuteSwitch] = useState(0);
   const [batchDuration, setBatchDuration] = useState(30);
   // To generate the timeslots in "Available time slots"
@@ -18,15 +21,19 @@ const EditingSlots = () => {
   // Function to fetch
   const fetchSlots = async () => {
     try {
-      const res = await fetch('http://localhost:8000/appointments');
+      const res = await fetch(`http://localhost:5000/booking_slots?service_provider_id=${service_provider_id}`);
       const data = await res.json();
 
       const formattedSlots = data.map((slot) => ({
         id: slot.id,
+        serviceProviderId: slot.service_provider_id,
         start: new Date(slot.startTime),
         end: new Date(slot.endTime),
         title: 'Available Slot',
+        isBooked: slot.is_booked,
       }));
+
+      console.log("Slot Id: ",id)
 
       console.log("Formatted Slots", formattedSlots)
 
@@ -43,10 +50,12 @@ const EditingSlots = () => {
     }
   };
 
- // Using Fetching here 
-  useEffect(() => {
+ // Using Fetching here when serivce provider changes
+ useEffect(() => {
+  if (service_provider_id) {
     fetchSlots();
-  }, []);
+  }
+}, [service_provider_id]);
 
   const handleMinuteSwitchChange = (e) => {
     setMinuteSwitch(parseInt(e.target.value, 10));
@@ -104,12 +113,17 @@ const EditingSlots = () => {
       return;
     }
     const newSlot = {
+      service_provider_id: service_provider_id, // Replace with dynamic provider ID
+      date: format(slot.start, 'yyyy-MM-dd'),
       startTime: slot.start.toISOString(), // converts date to String form
-      endTime: slot.end.toISOString(), // converts date to String form
+      endTime: slot.end.toISOString(),// converts date to String form
+      is_booked: false, 
     };
 
+    generateTimeSlots();
+
     try {
-      const res = await fetch('http://localhost:8000/appointments',  {
+      const res = await fetch('http://localhost:5000/booking_slots',  {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSlot), // converts the object into JSON String
@@ -119,7 +133,13 @@ const EditingSlots = () => {
         const addedSlot = await res.json();
         setAvailableSlots((prev) => [
           ...prev,
-          { id: addedSlot.id, start: new Date(addedSlot.startTime), end: new Date(addedSlot.endTime), title: 'Available Slot' },
+          { id: addedSlot.id,
+            serviceProviderId: addedSlot.service_provider_id, 
+            start: new Date(addedSlot.startTime), 
+            end: new Date(addedSlot.endTime), 
+            title: 'Available Slot',
+            isBooked: addedSlot.is_booked
+          },
         ]);
 
         // Remove selected slot from available slots
@@ -135,15 +155,16 @@ const EditingSlots = () => {
     }
   };
 
-  const handleDeleteSlot = async (index) => {
-    const slotToDelete = availableSlots[index];
+  // Function to handle slot deletion
+  const handleDeleteSlot = async (slotId) => {
     try {
-      const res = await fetch(`http://localhost:8000/appointments/${slotToDelete.id}`, {
+      const res = await fetch(`http://localhost:5000/booking_slots/${slotId}`, {
         method: 'DELETE',
       });
 
       if (res.ok) {
-        setAvailableSlots((prev) => prev.filter((_, i) => i !== index));
+        setAvailableSlots((prev) => prev.filter((slot) => slot.id !== slotId));
+        generateTimeSlots(); 
         toast.success('Slot Deleted Successfully');
       } else {
         throw new Error('Failed to delete slot');

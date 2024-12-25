@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --watch src/appointments.json --port 8000"
+    "server": "json-server --watch src/db.json --port 5000"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

@@ -27,7 +27,7 @@ const DisplaySlots = ({ availableSlots, deleteSlot }) => {
                 <span className="ml-2 text-gray-500">({duration} mins)</span>
               </div>
               <button
-                onClick={() => deleteSlot(index)}
+                onClick={() => deleteSlot(slot.id)}
                 className="px-2 py-1 bg-red-400 text-white rounded hover:bg-red-600"
               >
                 Delete

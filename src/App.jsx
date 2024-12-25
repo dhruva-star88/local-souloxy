@@ -22,7 +22,7 @@ const App = () => {
         <Route path ='/appointments' element = {<Appointments />}/>
         <Route path ='/message-area' element = {<MessageArea />}/>
         <Route path ='/learning-hub' element = {<LearningHub />}/>
-        <Route path ='/calendar' element = {<EditCalenderView />}/>
+        <Route path ='/calendar/:service_provider_id' element = {<EditCalenderView />}/>
         <Route path ='/edit-profile' element = {<EditProfile />}/>
         <Route path ='*' element = {<NotFoundPage />}/>
       </Route>
