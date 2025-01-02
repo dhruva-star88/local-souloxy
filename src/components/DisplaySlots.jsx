@@ -10,6 +10,7 @@ const calculateDuration = (start, end) => {
 
 
 const DisplaySlots = ({ availableSlots, deleteSlot }) => {
+  console.log("Available Slots in Display Area", availableSlots)
   return (
     <div>
       <h3 className="text-lg font-bold text-green-800">Existing Slots</h3>
